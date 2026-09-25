@@ -39,28 +39,13 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install Android SDK
-        shell: bash
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
-          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+      - name: Set up Android SDK
         run: |
-          set -euxo pipefail
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-34" "build-tools;34.0.0" "platform-tools"
 
-          mkdir -p "$ANDROID_HOME"
-
-          if [ ! -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
-            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdline-tools.zip
-            unzip -q /tmp/cmdline-tools.zip -d /tmp
-            rm -rf "$ANDROID_HOME/cmdline-tools"
-            mkdir -p "$ANDROID_HOME/cmdline-tools"
-            mv /tmp/cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
-          fi
-
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-
-          flutter config --android-sdk "$ANDROID_HOME"
+      - name: Accept Android licenses
+        run: |
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
 
       - name: Get Flutter dependencies
         run: flutter pub get
