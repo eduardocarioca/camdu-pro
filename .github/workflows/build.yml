@@ -41,12 +41,12 @@ jobs:
 
       - name: Install Android SDK 34
         uses: android-actions/setup-android@v3
+        with:
+          api-level: 34
+          build-tools: 34.0.0
 
       - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses > /dev/null || true
-
-      - name: Install Android build dependencies
-        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
       - name: Get Flutter dependencies
         run: flutter pub get
